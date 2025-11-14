@@ -1,5 +1,13 @@
 # Stats Lab VR
 
+<video src="VRed Trailer.mp4" controls width="600"></video>
+
+<video src="VRed Trailer.mp4" width="320" height="240" controls></video>
+
+<p align="center" width="100%">
+<video src="VRed Trailer.mp4" width="80%" controls></video>
+</p>
+
 ## Experience Snapshot
 - Step into a stylized learning lab where a quiet classroom interior, a library nook, and moody medieval wings can be swapped in via ready-made room prefabs (AI Room, Classroom Dim, Standard Room, Medieval Room) to set the tone for each statistics lesson.
 - A friendly drone host hovers nearby with an illuminated face plate and floating text canvas, narrating each activity in approachable language and prompting you through the story beat by beat.

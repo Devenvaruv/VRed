@@ -1,0 +1,9 @@
+/Library/
+/Temp/
+/Logs/
+/Obj/
+/UserSettings/
+/Build/
+/Builds/
+MemoryCaptures/
+.sys*

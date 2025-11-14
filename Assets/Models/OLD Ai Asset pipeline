@@ -1,0 +1,126 @@
+import bpy
+import os
+
+def has_holes(obj):
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.mesh.select_non_manifold()
+    bpy.ops.object.mode_set(mode='OBJECT')
+    return any(v.select for v in obj.data.vertices)
+
+def remove_dot_vertices(obj):
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.mesh.select_loose()
+    bpy.ops.object.mode_set(mode='OBJECT')
+    loose_verts = [v for v in obj.data.vertices if v.select]
+    bpy.ops.object.mode_set(mode='EDIT')
+    if loose_verts:
+        print(f"   🧹 Removing {len(loose_verts)} loose vertex/vertices from {obj.name}")
+        bpy.ops.mesh.dissolve_verts()
+    else:
+        print(f"   ✅ {obj.name} has no loose vertices")
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+source_folder = r"C:\Users\varud\Documents\My Web Sites\My project (2)\Assets\Models\AI Medival Floor - Copy"
+processed_folder = os.path.join(source_folder, "Processed_final_safe")
+os.makedirs(processed_folder, exist_ok=True)
+
+files = [f for f in os.listdir(source_folder) if f.endswith(('.glb', '.gltf'))]
+
+success_count = 0
+failures = []
+
+for file in files:
+    filepath = os.path.join(source_folder, file)
+    print(f"\n🔄 Processing: {file}")
+
+    try:
+        bpy.ops.object.select_all(action='SELECT')
+        bpy.ops.object.delete()
+
+        bpy.ops.import_scene.gltf(filepath=filepath)
+
+        export_this_file = False
+
+        for obj in bpy.context.selected_objects:
+            if obj.type != 'MESH':
+                continue
+
+            mesh = obj.data
+            verts_before = len(mesh.vertices)
+            tris_before = sum([1 if len(p.vertices) == 3 else 2 for p in mesh.polygons])
+
+            print(f"   🔸 {obj.name}: {verts_before} verts / {tris_before} tris")
+
+            if has_holes(obj):
+                print(f"   ❌ Skipping {obj.name} — already has holes")
+                continue
+
+            if tris_before < 2000:
+                print(f"   ⚠️ Skipping decimation (already low poly)")
+                continue
+
+            # Triangulate before decimation
+            bpy.context.view_layer.objects.active = obj
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_all(action='SELECT')
+            bpy.ops.mesh.quads_convert_to_tris()
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+            # Decimation loop: start aggressive, go easier until no cracks or threshold hit
+            current_ratio = 0.05
+            max_ratio = 0.5
+            clean = False
+
+            while current_ratio <= max_ratio:
+                print(f"   🧪 Trying decimation at ratio {current_ratio:.2f}")
+                mod = obj.modifiers.new(name='Decimate', type='DECIMATE')
+                mod.ratio = current_ratio
+                mod.use_collapse_triangulate = True
+                bpy.ops.object.modifier_apply(modifier=mod.name)
+
+                remove_dot_vertices(obj)
+
+                if has_holes(obj):
+                    print(f"   ❌ Hole detected at ratio {current_ratio:.2f} — trying higher")
+                    current_ratio *= 2
+                    bpy.ops.object.mode_set(mode='OBJECT')
+                else:
+                    print(f"   ✅ No holes at ratio {current_ratio:.2f} — keeping")
+                    clean = True
+                    break
+
+            if not clean:
+                print(f"   ❌ Failed to decimate {obj.name} safely. Skipping.")
+                continue
+
+            verts_after = len(obj.data.vertices)
+            tris_after = sum([1 if len(p.vertices) == 3 else 2 for p in obj.data.polygons])
+            shrink_percent = 100 * (1 - (tris_after / tris_before))
+            shrink_note = "⚠️ MAY CRACK" if shrink_percent > 90 else ""
+
+            print(f"      • Vertices: {verts_before} → {verts_after}")
+            print(f"      • Triangles: {tris_before} → {tris_after} {shrink_note}")
+            export_this_file = True
+
+        # Export only if at least one mesh passed
+        if export_this_file:
+            export_name = os.path.splitext(file)[0] + "_opt.glb"
+            export_path = os.path.join(processed_folder, export_name)
+            bpy.ops.export_scene.gltf(filepath=export_path, export_format='GLB')
+            print(f"📤 Exported to: {export_path}")
+            success_count += 1
+        else:
+            failures.append(file)
+
+    except Exception as e:
+        print(f"❌ Failed to process {file}: {str(e)}")
+        failures.append(file)
+
+# Final Summary
+print(f"\n✅ Done! {success_count}/{len(files)} files successfully exported.")
+if failures:
+    print(f"❗ Failures or skipped due to cracks: {failures}")

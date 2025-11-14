@@ -1,0 +1,168 @@
+{
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "asset": {
+    "version": "2.0",
+    "generator": "https://github.com/mikedh/trimesh"
+  },
+  "accessors": [
+    {
+      "componentType": 5125,
+      "type": "SCALAR",
+      "bufferView": 0,
+      "count": 150000,
+      "max": [
+        41565
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "byteOffset": 0,
+      "bufferView": 1,
+      "count": 41566,
+      "max": [
+        0.015688205137848854,
+        0.20614103972911835,
+        0.2308841347694397
+      ],
+      "min": [
+        -0.020380588248372078,
+        -0.20123927295207977,
+        -0.2258482575416565
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC2",
+      "byteOffset": 0,
+      "bufferView": 2,
+      "count": 41566,
+      "max": [
+        0.9979707598686218,
+        0.9978302717208862
+      ],
+      "min": [
+        0.002077449345961213,
+        0.04391050338745117
+      ]
+    },
+    {
+      "componentType": 5126,
+      "count": 41566,
+      "type": "VEC3",
+      "byteOffset": 0,
+      "bufferView": 3,
+      "max": [
+        0.9999997019767761,
+        0.9999997615814209,
+        0.999975323677063
+      ],
+      "min": [
+        -1,
+        -0.9999949336051941,
+        -0.9999919533729553
+      ]
+    }
+  ],
+  "meshes": [
+    {
+      "name": "geometry_0",
+      "extras": {
+        "prompt": "A structural damage patch revealing collapsed grey stone bricks, rusted iron reinforcements, and creeping green fungus. Made as a 2D overlay prop with no geometry depth, designed to be positioned over tiled dungeon walls in VR, adding localized variation without breaking seamlessness. Front view, 3d asset"
+      },
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1,
+            "TEXCOORD_0": 2,
+            "NORMAL": 3
+          },
+          "indices": 0,
+          "mode": 4,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "uri": "A_structural_damage_patch_re_0_glb_2_img0.jpg"
+    },
+    {
+      "uri": "A_structural_damage_patch_re_0_glb_2_img1.png"
+    }
+  ],
+  "textures": [
+    {
+      "source": 0
+    },
+    {
+      "source": 1
+    }
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "roughnessFactor": 1,
+        "metallicFactor": 1,
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      },
+      "doubleSided": true
+    }
+  ],
+  "nodes": [
+    {
+      "name": "world",
+      "children": [
+        1
+      ]
+    },
+    {
+      "name": "geometry_0",
+      "mesh": 0
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "A_structural_damage_patch_re_0_glb_2_data.bin",
+      "byteLength": 1930112
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 600000
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 600000,
+      "byteLength": 498792
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1098792,
+      "byteLength": 332528
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 1431320,
+      "byteLength": 498792
+    }
+  ]
+}
